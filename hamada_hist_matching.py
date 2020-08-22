@@ -28,7 +28,7 @@ class hamada():
 
         # Bins
         bin_eit = (self.bin_eit[channel_nb, :-1] + self.bin_eit[channel_nb, 1:]) / 2
-        bin_euvil = (self.bin_euvi[channel_nb, :-1] + self.bin_euvi[channel_nb, 1:]) / 2
+        bin_euvil = (self.bin_euvil[channel_nb, :-1] + self.bin_euvil[channel_nb, 1:]) / 2
         
         # Histogram matching
         cdf_tmp = np.interp(mask_log_eit.flatten(), bin_eit.flatten(),
