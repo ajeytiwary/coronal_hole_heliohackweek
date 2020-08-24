@@ -8,7 +8,7 @@ import skimage.measure
 
 import argparse
 import matplotlib.pyplot as plt
-from sklearn.decomposition import PCA
+from sklearn.decomposition import KernelPCA, PCA
 from sklearn.cluster import KMeans
 from sklearn.cluster import DBSCAN
 
@@ -17,7 +17,7 @@ from sklearn.cluster import DBSCAN
 p = argparse.ArgumentParser(
     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
-p.add_argument("-filepath", type=str, default='../../MDI_synoptic/MDI_maps/',
+p.add_argument("-filepath", type=str, default='example/',
                help="filepath of the synoptic maps (.fits)")
 p.add_argument("-image_idx", type=int, nargs='+', default=[0],
                help="index of the selected map")
@@ -32,6 +32,8 @@ p.add_argument("-fun", type=str, default="mean",
                help="pooling function")
 p.add_argument("-num_clu", type=int, default=4,
                help="number of clusters")
+p.add_argument("-kernel", type=str, default='linear',
+               choices=['sigmoid', 'rbf', 'linear'])
 p.add_argument("-model", type=str, default='kmeans',
                choices=['dbscan', 'kmeans'])
 
@@ -113,8 +115,16 @@ X = np.array(clu)
 coords = np.array(coord)
 
 # dimensional reduction again by PCA
-X_t = PCA(n_components=clusters).fit_transform(X)
 
+if args.kernel == 'linear':
+    X_t = PCA(n_components=clusters).fit_transform(X)
+
+else:
+    X_t = KernelPCA(n_components=clusters,
+                    kernel=args.kernel).fit_transform(X)
+
+print('shape of X_t:', X_t.shape)
+# import ipdb; ipdb.set_trace()
 
 # unsupervised learning
 
