@@ -2,6 +2,7 @@
 
 from astropy.io import fits
 import numpy as np
+import cupy as cp
 import glob
 from progressbar import progressbar
 import skimage.measure
@@ -11,6 +12,8 @@ import matplotlib.pyplot as plt
 from sklearn.decomposition import KernelPCA, PCA
 from sklearn.cluster import KMeans
 from sklearn.cluster import DBSCAN
+
+import torch
 
 
 # arguments
@@ -47,7 +50,6 @@ np.sort(files)
 # Get data shape
 img_shape = fits.open(files[0])[0].data.shape
 
-# Pre-allocate storage
 all_data = np.empty((len(files), img_shape[1], img_shape[0]),
                     dtype=np.float32)
 print('shape of all_data', all_data.shape)
@@ -57,6 +59,10 @@ p = progressbar
 for i, f in p(enumerate(files)):
     fd = fits.open(f)[0]
     all_data[i] = fd.data.T[::-1]
+
+# cuda availability
+if torch.cuda.is_available():
+    pass
 
 print(all_data.shape)
 
