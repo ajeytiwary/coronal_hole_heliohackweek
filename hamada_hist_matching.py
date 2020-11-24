@@ -14,12 +14,15 @@ class hamada():
         self.nb_channels, self.nb_bins = self.bin_eit.shape
         
     # Histogram matching (Hamada et al., 2019)
-    def hist_matching(self, data_eit, channel_nb):
+    def hist_matching(self, data_eit, data_euvi, channel_nb):
         
         # Standardize
         log_eit = np.log10(data_eit)
+        log_euvi = np.log10(data_euvi)
         mean_log_eit = np.nanmean(log_eit)
         std_log_eit = np.nanstd(log_eit)
+        mean_log_euvi = np.nanmean(log_euvi)
+        std_log_euvi = np.nanstd(log_euvi)
         norm_log_eit = (log_eit - mean_log_eit) / std_log_eit
         
         # Extract finite values
@@ -38,6 +41,6 @@ class hamada():
         
         # Adjust data
         norm_log_eit[where_mask] = norm_log_adjusted
-        data_eit_adjusted = 10.**(norm_log_eit*std_log_eit + mean_log_eit)
+        data_eit_adjusted = 10.**(norm_log_eit*std_log_euvi + mean_log_euvi)
         
         return data_eit_adjusted
